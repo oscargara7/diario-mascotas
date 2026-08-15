@@ -6,108 +6,180 @@
     <title>Diario de Mascotas</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #f5f6fa; color: #2f3640; display: flex; justify-content: center; min-height: 100vh; }
-        .app { width: 100%; max-width: 480px; background: #fff; min-height: 100vh; padding: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.08); padding-bottom: 40px; }
-        header { background: linear-gradient(135deg, #718093 0%, #2f3640 100%); color: white; padding: 20px 15px; border-radius: 14px; text-align: center; margin-bottom: 20px; }
-        header h1 { font-size: 20px; }
+        body { background: #f0f2f5; color: #1c1e21; display: flex; justify-content: center; min-height: 100vh; }
+        .app { width: 100%; max-width: 480px; background: #fff; min-height: 100vh; padding: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.08); padding-bottom: 50px; }
+        header { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; padding: 25px 15px; border-radius: 16px; text-align: center; margin-bottom: 25px; }
+        header h1 { font-size: 22px; font-weight: 800; }
         header p { font-size: 13px; opacity: 0.9; margin-top: 4px; }
-        h2 { font-size: 15px; margin: 18px 0 10px; color: #353b48; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .card { background: #f1f2f6; padding: 12px; border-radius: 10px; text-align: center; font-weight: 600; font-size: 14px; border: 1px solid #e1e2e6; }
-        .box { background: #e1b12c12; border: 2px dashed #e1b12c; padding: 15px; border-radius: 12px; margin-top: 25px; }
-        .box h3 { font-size: 14px; color: #2f3640; margin-bottom: 8px; }
-        input, select, button { width: 100%; padding: 11px; margin-top: 8px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
-        button { background: #44bd32; color: white; border: none; font-weight: bold; cursor: pointer; }
-        .memory { background: #fff; border: 1px solid #e1e2e6; padding: 12px; border-radius: 10px; margin-top: 10px; }
-        .tag { font-size: 11px; font-weight: bold; background: #718093; color: white; padding: 3px 8px; border-radius: 6px; display: inline-block; }
+        
+        h2 { font-size: 16px; margin: 20px 0 12px; color: #2d3436; display: flex; align-items: center; gap: 6px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
+        .card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 14px; overflow: hidden; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .card:active { transform: scale(0.98); }
+        .img-container { width: 100%; height: 130px; background: #dfe6e9; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .placeholder-icon { font-size: 40px; color: #b2bec3; }
+        .card-title { padding: 10px; font-weight: 700; font-size: 14px; color: #2d3436; background: #fff; border-top: 1px solid #f1f2f6; }
+        
+        .box { background: #f1f2f6; border-radius: 14px; padding: 18px; margin-top: 25px; }
+        .box h3 { font-size: 15px; color: #2d3436; margin-bottom: 10px; }
+        input, select, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 10px; border: 1px solid #ced4da; font-size: 14px; outline: none; }
+        button { background: #00b894; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button:active { background: #00876c; }
+        
+        .memory { background: #fff; border: 1px solid #e9ecef; padding: 14px; border-radius: 12px; margin-top: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .tag { font-size: 11px; font-weight: 800; background: #6c5ce7; color: white; padding: 4px 10px; border-radius: 20px; display: inline-block; }
+        
+        /* Modal de Foto */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 100%; max-width: 380px; text-align: center; }
+        .modal-content h3 { margin-bottom: 12px; font-size: 16px; }
+        .file-label { display: block; background: #0984e3; color: white; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .close-btn { background: #d63031; margin-top: 10px; }
     </style>
 </head>
 <body>
 <div class="app">
     <header>
-        <h1>🐾 Diario de Mascotas</h1>
-        <p>Los 11 consentidos del clan</p>
+        <h1>🐾 Diario del Clan</h1>
+        <p>Toca a una mascota para ver o cambiar su foto</p>
     </header>
 
     <h2>🐶 Los Perris (3)</h2>
-    <div class="grid">
-        <div class="card">🐶 Perri</div>
-        <div class="card">🐶 Malita</div>
-        <div class="card">🐶 Mala</div>
-    </div>
+    <div class="grid" id="gridPerros"></div>
 
     <h2>🐱 Los Michis (8)</h2>
-    <div class="grid">
-        <div class="card">🐱 Mboka</div>
-        <div class="card">🐱 Grisita</div>
-        <div class="card">🐱 Fortuna</div>
-        <div class="card">🐱 Bigote</div>
-        <div class="card">🐱 Chicho</div>
-        <div class="card">🐱 Negro</div>
-        <div class="card">🐱 Olimpito</div>
-        <div class="card">🐱 Grisita 2</div>
-    </div>
+    <div class="grid" id="gridGatos"></div>
 
     <div class="box">
-        <h3>📝 Agregar Anécdota o Recuerdo</h3>
-        <select id="mascotaSelect">
-            <optgroup label="Perros">
-                <option value="🐶 Perri">Perri</option>
-                <option value="🐶 Malita">Malita</option>
-                <option value="🐶 Mala">Mala</option>
-            </optgroup>
-            <optgroup label="Gatos">
-                <option value="🐱 Mboka">Mboka</option>
-                <option value="🐱 Grisita">Grisita</option>
-                <option value="🐱 Fortuna">Fortuna</option>
-                <option value="🐱 Bigote">Bigote</option>
-                <option value="🐱 Chicho">Chicho</option>
-                <option value="🐱 Negro">Negro</option>
-                <option value="🐱 Olimpito">Olimpito</option>
-                <option value="🐱 Grisita 2">Grisita 2</option>
-            </optgroup>
-        </select>
-        <input type="text" id="notaInput" placeholder="Escribe una nota sobre la mascota...">
-        <button onclick="guardarRecuerdo()">Guardar Recuerdo ✨</button>
+        <h3>📝 Registrar Anécdota</h3>
+        <select id="mascotaSelect"></select>
+        <input type="text" id="notaInput" placeholder="Escribe un recuerdo o nota...">
+        <button onclick="guardarRecuerdo()">Guardar Anécdota ✨</button>
     </div>
 
     <h2>📖 Muro de Recuerdos</h2>
-    <div id="muroRecuerdos">
-        <p style="font-size: 12px; color: #888; margin-top: 10px; text-align: center;" id="sinRecuerdos">Aún no hay recuerdos guardados.</p>
+    <div id="muroRecuerdos"></div>
+</div>
+
+<!-- Modal para subir foto -->
+<div class="modal" id="modalFoto">
+    <div class="modal-content">
+        <h3 id="modalTitulo">Subir foto de la mascota</h3>
+        <input type="file" id="inputFoto" accept="image/*" style="display:none;" onchange="procesarFoto(event)">
+        <label for="inputFoto" class="file-label">📸 Elegir foto de la galería</label>
+        <button class="close-btn" onclick="cerrarModal()">Cancelar</button>
     </div>
 </div>
 
 <script>
-    function cargarRecuerdos() {
-        const recuerdos = JSON.parse(localStorage.getItem('recuerdos_mascotas') || '[]');
-        const contenedor = document.getElementById('muroRecuerdos');
-        if (recuerdos.length > 0) {
-            contenedor.innerHTML = '';
-            recuerdos.forEach(r => {
-                contenedor.innerHTML += `
-                    <div class="memory">
-                        <span class="tag">${r.mascota}</span>
-                        <p style="margin-top: 6px; font-size: 13px;">${r.nota}</p>
-                    </div>
-                `;
-            });
-        }
+    const MASCOTAS = {
+        perros: ["Perri", "Malita", "Mala"],
+        gatos: ["Mboka", "Grisita", "Fortuna", "Bigote", "Chicho", "Negro", "Olimpito", "Grisita 2"]
+    };
+
+    let mascotaSeleccionada = "";
+
+    function init() {
+        const gridP = document.getElementById('gridPerros');
+        const gridG = document.getElementById('gridGatos');
+        const select = document.getElementById('mascotaSelect');
+
+        gridP.innerHTML = '';
+        gridG.innerHTML = '';
+        select.innerHTML = '';
+
+        // Cargar Perros
+        MASCOTAS.perros.forEach(nombre => {
+            gridP.appendChild(crearCard(nombre, '🐶'));
+            select.innerHTML += `<option value="🐶 ${nombre}">🐶 ${nombre}</option>`;
+        });
+
+        // Cargar Gatos
+        MASCOTAS.gatos.forEach(nombre => {
+            gridG.appendChild(crearCard(nombre, '🐱'));
+            select.innerHTML += `<option value="🐱 ${nombre}">🐱 ${nombre}</option>`;
+        });
+
+        cargarRecuerdos();
+    }
+
+    function crearCard(nombre, emoji) {
+        const fotoGuardada = localStorage.getItem(`foto_${nombre}`);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => abrirModal(nombre);
+
+        const imgHTML = fotoGuardada 
+            ? `<img src="${fotoGuardada}" alt="${nombre}">` 
+            : `<span class="placeholder-icon">${emoji}</span>`;
+
+        card.innerHTML = `
+            <div class="img-container" id="img_${nombre}">
+                ${imgHTML}
+            </div>
+            <div class="card-title">${nombre}</div>
+        `;
+        return card;
+    }
+
+    function abrirModal(nombre) {
+        mascotaSeleccionada = nombre;
+        document.getElementById('modalTitulo').innerText = `Cambiar foto de ${nombre}`;
+        document.getElementById('modalFoto').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalFoto').style.display = 'none';
+    }
+
+    function procesarFoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fotoBase64 = e.target.result;
+            localStorage.setItem(`foto_${mascotaSeleccionada}`, fotoBase64);
+            cerrarModal();
+            init(); // Recargar tarjetas con la nueva foto
+        };
+        reader.readAsDataURL(file);
     }
 
     function guardarRecuerdo() {
         const mascota = document.getElementById('mascotaSelect').value;
         const nota = document.getElementById('notaInput').value;
-        if (!nota.trim()) return alert('Por favor escribe una nota.');
+        if (!nota.trim()) return alert('Escribe una nota primero.');
 
         const recuerdos = JSON.parse(localStorage.getItem('recuerdos_mascotas') || '[]');
-        recuerdos.unshift({ mascota, nota });
+        recuerdos.unshift({ mascota, nota, fecha: new Date().toLocaleDateString() });
         localStorage.setItem('recuerdos_mascotas', JSON.stringify(recuerdos));
-        
+
         document.getElementById('notaInput').value = '';
         cargarRecuerdos();
     }
 
-    cargarRecuerdos();
+    function cargarRecuerdos() {
+        const recuerdos = JSON.parse(localStorage.getItem('recuerdos_mascotas') || '[]');
+        const contenedor = document.getElementById('muroRecuerdos');
+        if (recuerdos.length === 0) {
+            contenedor.innerHTML = '<p style="font-size: 12px; color: #888; margin-top: 10px; text-align: center;">Aún no hay recuerdos guardados.</p>';
+            return;
+        }
+        contenedor.innerHTML = '';
+        recuerdos.forEach(r => {
+            contenedor.innerHTML += `
+                <div class="memory">
+                    <span class="tag">${r.mascota}</span>
+                    <p style="margin-top: 6px; font-size: 13.5px;">${r.nota}</p>
+                </div>
+            `;
+        });
+    }
+
+    init();
 </script>
 </body>
 </html>
